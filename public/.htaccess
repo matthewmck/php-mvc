@@ -1,0 +1,34 @@
+# IfModule mod_rewrite ensures mod_rewrite is enabled if not enabled by default
+<IfModule mod_rewrite.c>
+
+  # A MultiViews search is where the server does an implicit filename pattern match, 
+  # and choose from amongst the results.
+  # -MultiViews turns off MultiViews
+  Options -Multiviews
+
+  # RewriteEngine On enables URL rewriting 
+  RewriteEngine On
+
+  # Establishes a relative base
+  # Tells mod_rewrite what to append to the beginning of every relative path.
+  RewriteBase /php-mvc/public
+
+  # If the directory with the specified name in the URL doesn't exist, 
+  # procede to the rewrite rule below
+  RewriteCond %{REQUEST_FILENAME} !-d
+
+  # If the file with the specified name in the URL doesn't exist, 
+  # procede to the rewrite rule below
+  RewriteCond %{REQUEST_FILENAME} !-f
+
+  # If a request is made that matches any URL except the server root,
+  # it will be rewritten as index.php?url=$1
+  # $1 is a place holder that allows you to a shortened URL path,
+  # example (public?url=about will now be public/about)
+  # QSA means that if there's a query string passed with the original URL, 
+  # it will be appended to the rewrite
+  # example (posts?p=1 will be rewritten as posts&p=1)
+  # L means if the rule matches, don't process any more RewriteRules below this one.
+  RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
+
+</IfModule>
